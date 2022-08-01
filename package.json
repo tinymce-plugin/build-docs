@@ -1,21 +1,15 @@
 {
   "name": "@tinymce-plugin/build-docs",
   "private": false,
-  "version": "0.0.3",
+  "version": "0.0.1",
   "module": "./index.js",
-  "browser": "./dist/plugin.min.js",
-  "unpkg": "./dist/plugin.min.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:tsc": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview",
-    "build:docs": "vite --config docs-config.ts",
-    "i18n": "node ./src/i18n/i18n-api.js"
   },
   "author": "Five(Li Hailong)",
   "license": "Apache-2.0",
-  "description": "一键排版",
+  "description": "开发tinymce-plugin的插件 构建文档",
   "dependencies": {
     "@npkg/vue-router": "^4.0.15",
     "@tinymce-plugin/tinymce-vue": "^0.0.1",
@@ -31,6 +25,7 @@
     "markdown-it": "^13.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "tinymce-plugin": "^0.0.3-beta.18",
     "@npkg/tinymce-plugin": "^0.0.3-beta.18",
     "sass": "1.37.5",
     "vue": "^3.2.25",
@@ -45,7 +40,7 @@
     "__docs__",
     "demo"
   ],
-  "homepage": "https://github.com/tinymce-plugin/tp-layout",
+  "homepage": "https://github.com/tinymce-plugin/build-docs",
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.3.1",
     "@types/node": "^17.0.23",
