@@ -5,7 +5,7 @@
   "module": "./index.js",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build"
   },
   "author": "Five(Li Hailong)",
   "license": "Apache-2.0",
@@ -35,11 +35,6 @@
     "tslib": "^2.3.1",
     "tinymce": "5.8.2"
   },
-  "files": [
-    "dist",
-    "__docs__",
-    "demo"
-  ],
   "homepage": "https://github.com/tinymce-plugin/build-docs",
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.3.1",
