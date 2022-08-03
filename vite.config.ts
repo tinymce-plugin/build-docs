@@ -1,15 +1,31 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import {createVuedcoPlugin} from "./doc";
+import {createVuedcoPlugin,initPlugin} from "./doc";
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import path from "path";
+import { namingFormat} from "../vite-build/dist/hooks/index";
+const pkg = require("../../../package.json");
+
+const registerName = namingFormat.toHump(pkg.name.replace(/\@tinymce-plugin\//, ''))
+const pluginName = namingFormat.toHyphen(pkg.name.replace(/\@tinymce-plugin\//, ''))
+// console.log(registerName);
 
 const pathResolve = (pathStr:string) => {
   return path.resolve(__dirname, pathStr);
 };
+let aliasList =[
+  {find: "/@", replacement: pathResolve('./src')},
+  {find: "vue", replacement: 'vue/dist/vue.esm-bundler.js'},
+  {find: "/@tools/", replacement: pathResolve('./tools/')},
+] 
+aliasList.push({find: `@tinymce-plugin/${pluginName}/`,replacement: pathResolve('../../../dist/')})
+aliasList.push({find: `@npkg/tinymce-plugin`,replacement: pathResolve('./tinymce-plugin')})
+aliasList.push({find: `tinymce-plugin`,replacement: pathResolve('./tinymce-plugin')})
+
 // https://vitejs.dev/config/
-export default defineConfig(({ command, mode })=>{
+export default defineConfig(async({ command, mode })=>{
   // createRedirect(__dirname)/
+  await initPlugin(registerName)
   return {
     // base: '/build-docs/',
     server: {
@@ -24,7 +40,7 @@ export default defineConfig(({ command, mode })=>{
       },
       fs: {
         // 可以为项目根目录的上一级提供服务
-        allow: [pathResolve('../../../__docs__'),pathResolve('./')]
+        allow: [pathResolve('../../../__docs__'),pathResolve('../../../dist'),pathResolve('./'),pathResolve('./packages')]
       }
     },
     css: {
@@ -39,14 +55,7 @@ export default defineConfig(({ command, mode })=>{
       }
     },
     resolve:{
-      alias:{
-        '/@': pathResolve('./src'),
-        'vue': 'vue/dist/vue.esm-bundler.js',
-        '/@tools/': pathResolve('./tools/'),
-        '@tinymce-plugin/tp-layout': pathResolve('../../../dist/plugin.js'),
-        'tinymce-plugin/plugins/tpLayout': pathResolve('../../../dist/'),
-        '@npkg/tinymce-plugin/plugins/tpLayout': pathResolve('../../../dist/'),
-      },
+      alias: aliasList,
       extensions:[ '.mjs', '.js', '.ts', '.jsx', '.tsx', '.json','.md']
     },
     build:{
@@ -56,6 +65,7 @@ export default defineConfig(({ command, mode })=>{
       brotliSize: false,
     },
     plugins: [
+      // myPlugin(),
       createVuedcoPlugin({
         docsPath(root) {
           return  "/__docs__"

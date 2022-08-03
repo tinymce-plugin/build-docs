@@ -24,7 +24,8 @@ import './assets/styles/components/vp-code.css'
 import './assets/styles/components/tp-doc.css'
 import './assets/styles/components/vp-sponsor.css'
 import "./assets/css/markdown.css";
-
+//@ts-ignore
+window.__TP_DEV__ = true
 const app = createApp(App);
 app.component("modalBox",modalBox);
 app.component("fvToc",fvToc);

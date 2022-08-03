@@ -1,4 +1,5 @@
 import fs from "fs";
+import _path  from "path";
 const siteMap = []
 import MarkdownIt from "markdown-it";
 import mdContainer from "./markdown-it-container";
@@ -6,6 +7,9 @@ import mdAnchor from "./markdown-it-anchor";
 import mdToc from "./markdown-it-anchor/toc";
 import {resolveHighlightLines, isHighlightLine} from "./highlightLines";
 import * as csstree from 'css-tree';
+const pathResolve = (pathStr:string) => {
+  return _path.resolve(__dirname, pathStr);
+};
 // import  from "axios"
 // import _G from '../../../global'
 // import _routes from "../../../src/router/routers"
@@ -367,6 +371,75 @@ interface createVuedcoPlugin {
   plugins?: any[];
 }
 let viteConfig: any | undefined = undefined 
+//判断是否文件夹
+function isFile(path) {
+  return fs.statSync(path).isFile()
+}
+// copy 文件
+function copyFile(src, dest) {
+  const folderPath = _path.parse(dest).dir
+  // 文件夹是否存在
+  if (!fs.existsSync(folderPath)) {
+    // 不存在 (递归创建文件夹)
+    fs.mkdirSync(folderPath, { recursive: true })
+  }
+  fs.copyFileSync(src, dest)
+}
+const copyFolder = (source, dest)=>{
+  const sourcePath = _path.resolve(source)
+  const destPath = _path.resolve(dest)
+  // 原路径是否存在
+  if (!fs.existsSync(sourcePath)) {
+    return console.log('source path does not exist')
+  }
+  // 源路径存在
+  // 判断源路径是否时文件
+  if (isFile(sourcePath)) {
+    // 是文件
+    copyFile(sourcePath, destPath)
+  } else {
+    // 是文件夹
+    fs.readdirSync(sourcePath)
+      .forEach(item => {
+        const fullPath = _path.join(sourcePath, item)
+        if (fs.statSync(fullPath).isFile()) {
+          copyFile(fullPath, _path.join(destPath, item))
+        } else {
+          // 文件夹 (进行递归)
+          copyFolder(fullPath, _path.join(destPath, item))
+        }
+      })
+  }
+}
+export const initPlugin = async(name)=>{
+  
+ //判断是否存在tinymce-plugin 没有就通过@npkg/tinymce-plugin 去更新
+  try{
+    let isTpDir = fs.readdirSync('./tinymce-plugin')
+  } catch (error) {
+    
+  }
+  if(!isTpDir){
+    copyFolder('../../../node_modules/@npkg/tinymce-plugin','./tinymce-plugin')
+  }
+  let _sourcePath = './tinymce-plugin/plugins/'+name
+  let _rmdir = ''
+  try {
+    _rmdir = fs.readdirSync(_sourcePath)
+  } catch (error) {
+    
+  }
+ 
+  if(_rmdir){
+    await delPath(_sourcePath)
+  }
+   copyFolder('../../../dist',_sourcePath)
+   try {
+    copyFolder('../../../dist/langs','./langs')
+   } catch (error) {
+    
+   }
+}
 export function createVuedcoPlugin(options: { docsPath: any; mode?: any; root?: any; }) {
   const { docsPath , root, mode} = options;
   const docDir = docsPath?docsPath(root) :'' || root;
