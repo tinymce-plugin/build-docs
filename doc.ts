@@ -235,7 +235,7 @@ const demoTinymceBoxContainer  =  (md: { render: (arg0: any) => any; }, callback
       <title>Document</title>
       <style>${_styleStr}</style>\n
       <script src="/tinymce/tinymce.js"></script>
-      <script src="/tinymce/tinymce-plugin.js"></script>
+      <script src="/tinymce-plugin/tinymce-plugin.js"></script>
     </head><body style="padding-bottom: 20px"> ${_htmlStr}<script> ${_jsStr}</script></body></html>`
     let demoSrc = '/demo/codebox/demo-'+currentBoxTypeDemo.fileName+ new Date().getTime()+'/'
    mkdirPath('./public'+demoSrc)
@@ -414,8 +414,9 @@ const copyFolder = (source, dest)=>{
 export const initPlugin = async(name)=>{
   
  //判断是否存在tinymce-plugin 没有就通过@npkg/tinymce-plugin 去更新
+ let isTpDir
   try{
-    let isTpDir = fs.readdirSync('./tinymce-plugin')
+    isTpDir = fs.readdirSync('./tinymce-plugin')
   } catch (error) {
     
   }
@@ -423,17 +424,30 @@ export const initPlugin = async(name)=>{
     copyFolder('../../../node_modules/@npkg/tinymce-plugin','./tinymce-plugin')
   }
   let _sourcePath = './tinymce-plugin/plugins/'+name
+  let _tinymceSourcePath = './public/tinymce/plugins/'+name
   let _rmdir = ''
+  let _rmdirTinymce = ''
   try {
     _rmdir = fs.readdirSync(_sourcePath)
   } catch (error) {
     
   }
- 
+  //删除tinymce中该插件
+  try {
+    _rmdirTinymce  = fs.readdirSync(_tinymceSourcePath)
+   
+  } catch (error) {
+    
+  }
+  if(_rmdirTinymce){
+    await delPath(_tinymceSourcePath)
+  }
+
   if(_rmdir){
     await delPath(_sourcePath)
   }
    copyFolder('../../../dist',_sourcePath)
+   copyFolder('../../../dist',_tinymceSourcePath)
    try {
     copyFolder('../../../dist/langs','./langs')
    } catch (error) {

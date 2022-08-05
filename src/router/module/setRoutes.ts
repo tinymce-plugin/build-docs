@@ -5,7 +5,7 @@ console.log(modulesList);
 
 // console.log(modulesList);
 // console.dir(import.meta);
-const setRoutes = (router)=>{
+const setRoutes = (router:any)=>{
 router.push(router.currentRoute.value.fullPath).catch(()=>{});
 }
 export default setRoutes

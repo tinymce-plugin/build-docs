@@ -1,7 +1,7 @@
 {
   "name": "@tinymce-plugin/build-docs",
   "private": false,
-  "version": "0.0.3",
+  "version": "0.0.5",
   "module": "./index.js",
   "scripts": {
     "dev": "vite",
